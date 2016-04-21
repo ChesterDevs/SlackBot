@@ -17,12 +17,12 @@ var body = {
 };
 
 function bot_facebook(channel) {
-	FB.options({
-	    appId:          body.appID,
-	    appSecret:      body.secret,
-	});	
-	
-	FB.api('/991180877618552/feed', 'get', body, function (res) {
+	// FB.options({
+	//     appId:          body.appID,
+	//     appSecret:      body.secret,
+	// });	
+	console.log("Fetching Facebook Post");
+	FB.api('/991180877618552/feed?access_token=' + body.appID + "|" + body.secret, 'get', body, function (res) {
 		
 		if(res.data == undefined || res.data == null) {
 			bot.postMessage(channel, "Sorry, I can't do that right now, Dave");
@@ -31,7 +31,8 @@ function bot_facebook(channel) {
 		}
 
 		var post = res.data[0];
-
+		console.log(res);
+		
 		bot.postMessage(channel, post.message, {
 			attachments: [
 				{
