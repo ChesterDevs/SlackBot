@@ -1,28 +1,30 @@
+var fs = require('fs');
+
+var config = null;
+
+config = JSON.parse(fs.readFileSync('../bot_config/config.json', 'utf8'));
+
 var Bot = require('slackbots');
 var settings = {
-	token: 'xoxb-34305184308-0fAirPS6fr2lpf5IEMSyfkcF',
-	name: "ChesterDev"
+	token: config.slack.token,
+	name: config.slack.name
 };
 
-var meetupKey = "254316642f63726f2ed1f606a197065";
-var meetup = require('meetup-api')({key: meetupKey});
+var meetup = require('meetup-api')({key: config.meetup.key});
 
 var FB = require('fb');
 
 var bot = new Bot(settings);
 
 var body = {
-	appID: "1608665229458261",
-	secret: "0c726098c0c65525b0de5aa2446381f9"
+	appID: config.facebook.appId,
+	secret: config.facebook.appSecret
 };
 
 function bot_facebook(channel) {
-	// FB.options({
-	//     appId:          body.appID,
-	//     appSecret:      body.secret,
-	// });	
 	console.log("Fetching Facebook Post");
-	FB.api('/991180877618552/feed?access_token=' + body.appID + "|" + body.secret, 'get', body, function (res) {
+
+	FB.api('/991180877618552/feed?access_token=' + config.facebook.appId + "|" + config.facebook.appSecret, 'get', body, function (res) {
 		
 		if(res.data == undefined || res.data == null) {
 			bot.postMessage(channel, "Sorry, I can't do that right now, Dave");
@@ -32,7 +34,7 @@ function bot_facebook(channel) {
 
 		var post = res.data[0];
 		console.log(res);
-		
+
 		bot.postMessage(channel, post.message, {
 			attachments: [
 				{
